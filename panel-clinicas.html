@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 Panel de Clínicas - Cleardent</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const clinicaFolders = [
+          { label: "Instalaciones", icon: "🏢️" },
+          { label: "Equipo", icon: "👥" },
+          { label: "Tratamientos", icon: "🦷" },
+          { label: "Eventos", icon: "🎉" },
+        ];
+
+        const marketingFolders = [
+          {
+            label: "Revisión",
+            icon: "🔍",
+            desc: "Fotos pendientes de clasificar",
+            isRevision: true,
+          },
+          {
+            label: "GBP",
+            icon: "📍",
+            desc: "Google Business Profile",
+            sub: [
+              { label: "Fachadas", icon: "🏢" },
+              { label: "Interior", icon: "🛋️" },
+              { label: "Equipo", icon: "👥" },
+              { label: "Tratamientos", icon: "🦷" },
+              { label: "Antes / Después", icon: "📊" },
+              { label: "Subidas Mensuales", icon: "📅" },
+            ],
+          },
+          {
+            label: "Campañas",
+            icon: "📢",
+            desc: "Material emocional y comercial",
+            sub: [
+              { label: "Sonrisa Emocional", icon: "😊" },
+              { label: "Implantes", icon: "🦷" },
+              { label: "Ortodoncia", icon: "✨" },
+              { label: "Estética", icon: "💎" },
+              { label: "Equipo Humano", icon: "👨‍⚕️" },
+              { label: "Financiamiento", icon: "💳" },
+              { label: "Creatividades Finales", icon: "🖼️" },
+            ],
+          },
+          {
+            label: "Diseño",
+            icon: "🎨",
+            desc: "Recursos para diseño gráfico",
+            sub: [
+              { label: "Equipo Planos Amplios", icon: "📷" },
+              { label: "Equipo Primer Plano", icon: "📸" },
+              { label: "Instalaciones Vertical", icon: "📱" },
+              { label: "Instalaciones Horizontal", icon: "🖥️" },
+              { label: "Recursos Genéricos", icon: "🗂️" },
+              { label: "Marca Agua y Plantillas", icon: "🏷️" },
+            ],
+          },
+          {
+            label: "IA",
+            icon: "🤖",
+            desc: "Contenido generado con IA",
+            sub: [
+              { label: "Uso GBP", icon: "📍" },
+              { label: "Uso Campañas", icon: "📢" },
+              { label: "Uso Interno", icon: "📁" },
+              { label: "No Usar", icon: "🚫" },
+            ],
+          },
+        ];
+
+        const PANELS = ["Clínicas", "Marketing"];
+        const CLINICAS_MAP = {
+          MADRID: ["Cleardent — Bravo Murillo"],
+          SEVILLA: ["Cleardent — Sevilla"],
+          ALMERÍA: ["Cleardent — Adra"],
+        };
+
+        function FolderCard({ label, icon, count = 0 }) {
+          return (
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col items-center gap-2 hover:shadow-sm hover:border-slate-300 transition-all cursor-pointer">
+              <span className="text-4xl">{icon}</span>
+              <span className="text-sm font-medium text-slate-700 text-center">{label}</span>
+              <span className="text-xs text-slate-400">📂 {count}</span>
+              <div className="flex gap-2 mt-1">
+                <button className="text-xs border border-slate-200 rounded-full px-3 py-1 text-slate-500 hover:bg-slate-50" onClick={e => e.stopPropagation()}>↑ Subir</button>
+                <button className="text-xs border border-slate-200 rounded-full px-3 py-1 text-slate-500 hover:bg-slate-50" onClick={e => e.stopPropagation()}>👁 Ver</button>
+              </div>
+            </div>
+          );
+        }
+
+        function SectionBlock({ folder, defaultOpen = false }) {
+          const [open, setOpen] = useState(defaultOpen);
+
+          if (folder.isRevision) {
+            return (
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="w-full flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition-colors text-left"
+                >
+                  <span className="text-2xl">{folder.icon}</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-slate-800">{folder.label}</p>
+                    <p className="text-xs text-slate-400">{folder.desc}</p>
+                  </div>
+                  <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">📂 0</span>
+                  <span className="text-slate-300 text-sm ml-2">{open ? "▲" : "▼"}</span>
+                </button>
+                {open && (
+                  <div className="border-t border-slate-100 px-5 py-8 text-center text-slate-400 text-sm bg-slate-50">
+                    No hay fotos pendientes de revisión.
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => setOpen(!open)}
+                className="w-full flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition-colors text-left"
+              >
+                <span className="text-2xl">{folder.icon}</span>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-slate-800">{folder.label}</p>
+                  <p className="text-xs text-slate-400">{folder.desc}</p>
+                </div>
+                <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{folder.sub.length} carpetas</span>
+                <span className="text-slate-300 text-sm ml-2">{open ? "▲" : "▼"}</span>
+              </button>
+              {open && (
+                <div className="border-t border-slate-100 p-4 grid grid-cols-4 gap-3 bg-slate-50">
+                  {folder.sub.map((s, i) => (
+                    <div key={i} className="bg-white rounded-xl border border-slate-200 p-3 flex flex-col items-center gap-1.5 hover:shadow-sm hover:border-slate-300 transition-all cursor-pointer">
+                      <span className="text-2xl">{s.icon}</span>
+                      <span className="text-xs font-medium text-slate-600 text-center leading-tight">{s.label}</span>
+                      <span className="text-xs text-slate-400">📂 0</span>
+                      <div className="flex gap-1 mt-0.5">
+                        <button className="text-xs border border-slate-200 rounded-full px-2 py-0.5 text-slate-500 hover:bg-slate-50" onClick={e => e.stopPropagation()}>↑</button>
+                        <button className="text-xs border border-slate-200 rounded-full px-2 py-0.5 text-slate-500 hover:bg-slate-50">👁</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          const [panel, setPanel] = useState("Clínicas");
+          const [provincia, setProvincia] = useState("ALMERÍA");
+          const [clinica, setClinica] = useState("Cleardent — Adra");
+
+          return (
+            <div className="min-h-screen bg-slate-50 p-6">
+              <div className="max-w-3xl mx-auto">
+
+                {/* Top bar */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-xl">🏥</div>
+                    <div>
+                      <h1 className="text-base font-semibold text-slate-800">
+                        {panel === "Clínicas" ? "Subir imágenes" : "Panel Marketing"}
+                      </h1>
+                      <p className="text-xs text-slate-400">
+                        {panel === "Clínicas" ? clinica : "Material revisado y aprobado"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="flex bg-white border border-slate-200 rounded-full p-0.5 gap-0.5">
+                      {PANELS.map(p => (
+                        <button
+                          key={p}
+                          onClick={() => setPanel(p)}
+                          className={`text-xs px-4 py-1.5 rounded-full font-medium transition-all ${panel === p ? "bg-slate-800 text-white" : "text-slate-500 hover:text-slate-700"}`}
+                        >{p}</button>
+                      ))}
+                    </div>
+
+                    {panel === "Clínicas" && (
+                      <div className="flex items-center gap-1 border border-orange-200 bg-white rounded-full px-4 py-1.5">
+                        <select
+                          className="text-xs text-slate-600 bg-transparent outline-none cursor-pointer"
+                          value={provincia}
+                          onChange={e => { setProvincia(e.target.value); setClinica(CLINICAS_MAP[e.target.value][0]); }}
+                        >
+                          {Object.keys(CLINICAS_MAP).map(c => <option key={c}>{c}</option>)}
+                        </select>
+                        <span className="text-slate-300 mx-1">|</span>
+                        <select
+                          className="text-xs text-slate-600 bg-transparent outline-none cursor-pointer"
+                          value={clinica}
+                          onChange={e => setClinica(e.target.value)}
+                        >
+                          {CLINICAS_MAP[provincia].map(c => <option key={c}>{c}</option>)}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* PANEL CLÍNICAS */}
+                {panel === "Clínicas" && (
+                  <div className="grid grid-cols-4 gap-4">
+                    {clinicaFolders.map((f, i) => (
+                      <FolderCard key={i} label={f.label} icon={f.icon} count={0} />
+                    ))}
+                  </div>
+                )}
+
+                {/* PANEL MARKETING */}
+                {panel === "Marketing" && (
+                  <div className="space-y-2">
+                    {marketingFolders.map((f, i) => (
+                      <SectionBlock key={i} folder={f} defaultOpen={i === 0} />
+                    ))}
+                  </div>
+                )}
+
+              </div>
+            </div>
+          );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
